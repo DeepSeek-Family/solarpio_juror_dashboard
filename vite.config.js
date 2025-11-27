@@ -14,4 +14,9 @@ export default defineConfig({
     host: "0.0.0.0",
     port: 3016,
   },
+  preview: {
+    host: true, // All network interfaces allow
+    port: 3016, // Preview port
+    allowedHosts: ["juror.glassfile.xyz"],
+  },
 });
