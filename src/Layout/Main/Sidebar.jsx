@@ -3,10 +3,11 @@ import {
   MenuUnfoldOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import { Button, Menu, Modal, Upload } from "antd";
+import { Button, Menu, Modal, Upload, message } from "antd";
 import { useEffect, useState } from "react";
 import { IoIosLogOut } from "react-icons/io";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useCreateAccountLinkMutation } from "../../redux/apiSlices/connectingAccountSlice";
 
 import image4 from "../../assets/image4.png";
 import {
@@ -16,6 +17,7 @@ import {
   Settings,
   SubscriptionManagement,
 } from "../../components/common/Svg";
+import { useProfileQuery } from "../../redux/apiSlices/authSlice";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const location = useLocation();
@@ -27,6 +29,10 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const navigate = useNavigate();
   // Narrower default widths (expanded widths reduced)
   const [sidebarWidth, setSidebarWidth] = useState(collapsed ? 72 : 260);
+  const [createAccountLink, { isLoading: isCreatingLink }] =
+    useCreateAccountLinkMutation();
+
+  const [] = useProfileQuery();
 
   useEffect(() => {
     const handleResize = () => {
@@ -54,6 +60,21 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
     navigate("/auth/login");
   };
   const handleCancel = () => setIsLogoutModalOpen(false);
+
+  const handleConnectAccount = async () => {
+    try {
+      const response = await createAccountLink().unwrap();
+      if (response.success && response.data) {
+        window.open(response.data, "_blank");
+        message.success(
+          response.message || "Account link created successfully"
+        );
+      }
+    } catch (error) {
+      message.error(error?.message || "Failed to create account link");
+      console.error("Error creating account link:", error);
+    }
+  };
 
   // Logo upload handler
   // Logo upload handler
@@ -135,6 +156,35 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
       key: "/profile",
       icon: renderIcon(Settings, "/profile"),
       label: <Link to="/profile">{collapsed ? "" : "Settings"}</Link>,
+    },
+
+    {
+      key: "/connect-account",
+      icon: (
+        <div
+          style={{ width: 20, height: 20 }}
+          className={isCreatingLink ? "svg-active" : ""}
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke={isCreatingLink ? "#ffffff" : "currentColor"}
+            strokeWidth="2"
+          >
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      ),
+      label: (
+        <p onClick={handleConnectAccount} className="cursor-pointer">
+          {collapsed
+            ? ""
+            : isCreatingLink
+            ? "Connecting..."
+            : "Connect Account"}
+        </p>
+      ),
+      className: isCreatingLink ? "ant-menu-item-selected" : "",
     },
 
     // {
