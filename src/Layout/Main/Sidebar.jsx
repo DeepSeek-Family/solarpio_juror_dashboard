@@ -17,7 +17,6 @@ import {
   Settings,
   SubscriptionManagement,
 } from "../../components/common/Svg";
-import { useProfileQuery } from "../../redux/apiSlices/authSlice";
 
 const Sidebar = ({ collapsed, setCollapsed }) => {
   const location = useLocation();
@@ -31,8 +30,6 @@ const Sidebar = ({ collapsed, setCollapsed }) => {
   const [sidebarWidth, setSidebarWidth] = useState(collapsed ? 72 : 260);
   const [createAccountLink, { isLoading: isCreatingLink }] =
     useCreateAccountLinkMutation();
-
-  const [] = useProfileQuery();
 
   useEffect(() => {
     const handleResize = () => {

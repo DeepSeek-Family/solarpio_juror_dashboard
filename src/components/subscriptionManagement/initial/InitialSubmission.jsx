@@ -208,7 +208,10 @@ const InitialSubmission = () => {
         ],
       };
 
-      await jurySubmission({ id: selectedRecord.raw._id, body }).unwrap();
+      await jurySubmission({
+        id: selectedRecord.raw?.submission?._id,
+        body,
+      }).unwrap();
 
       setIsAcceptModalVisible(false);
       // Clear selected record so table state can refresh cleanly
@@ -261,7 +264,10 @@ const InitialSubmission = () => {
         ],
       };
 
-      await jurySubmission({ id: selectedRecord.raw._id, body }).unwrap();
+      await jurySubmission({
+        id: selectedRecord.raw?.submission?._id,
+        body,
+      }).unwrap();
 
       setIsJuryModalVisible(false);
       setSelectedRecord(null);
@@ -342,7 +348,10 @@ const InitialSubmission = () => {
             ],
           };
 
-          await jurySubmission({ id: record.raw._id, body }).unwrap();
+          await jurySubmission({
+            id: record.raw?.submission?._id,
+            body,
+          }).unwrap();
 
           message.success("Case marked as Disproven!");
           return Promise.resolve();
